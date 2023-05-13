@@ -1,24 +1,5 @@
 `timescale 1ns / 1ps
-//////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
-// 
-// Create Date: 13.05.2023 14:08:31
-// Design Name: 
-// Module Name: fir
-// Project Name: 
-// Target Devices: 
-// Tool Versions: 
-// Description: 
-// 
-// Dependencies: 
-// 
-// Revision:
-// Revision 0.01 - File Created
-// Additional Comments:
-// 
-//////////////////////////////////////////////////////////////////////////////////
-
+`default_nettype none
 
 module fir(
     input clk,
@@ -30,7 +11,7 @@ module fir(
     output o_hsync,
     output o_vsync,
     output o_valid,
-    output [7:0] o_pixel,
+    output [7:0] o_pixel
     );
 
     // CIRCULAR BUFFERS
@@ -85,6 +66,42 @@ module fir(
                         end
                     end
                 end
+            end
+        end
+    endgenerate
+
+    // COEFFICIENT REGISTERS
+    reg [15:0] coeff_reg[4:0][4:0];
+
+    genvar x, y;
+    generate
+        for(x = 0; x < 4; x = x + 1) begin
+            for(y = 0; y < 4; y = y + 1) begin
+                always @ (posedge clk)
+                begin
+                    if(x == y) begin
+                        coeff_reg[i][j] <= 16'h0800;
+                    end else begin
+                        coeff_reg[i][j] <= 16'h000F;
+                    end
+                end
+            end
+        end
+    endgenerate
+
+    // CALCULATE OUTPUT
+    reg [23:0] mul_out[4:0][4:0];
+
+    generate
+        for(i = 0; i < 4; i = i + 1) begin
+            for(j = 0; j < 4; j = j + 1) begin
+                case(wr_sel_shr) begin
+                    1'b0001:
+                        mul_out[i][j] <= coeff_reg[i][j] * {buff_shr[][], 8'h00};
+                    1'b0010:
+                    1'b0100:
+                    1'b1000:
+                endcase
             end
         end
     endgenerate
