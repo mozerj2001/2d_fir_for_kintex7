@@ -51,6 +51,45 @@ module fir(
     endgenerate
 
 
+    // ARRANGE SYSTOLIC FIR INPUT
+    wire [7:0] dsp_in[4:0];
+    reg [7:0] del_input[3:0];
+    reg [7:0] del_dout0[2:0];
+    reg [7:0] del_dout1[1:0];
+    reg [7:0] del_dout2;
+
+
+    genvar j;
+    generate
+        for(j = 0; j < 4; j = j + 1) begin
+            always @ (posedge clk) begin
+                if(j == 0) begin
+                    del_input[j] <= i_pixel;
+                end else if(j == 1) begin
+                    del_input[j] <= del_input[j-1];
+                    del_dout0[j-1] <= buff_dout[0];
+                end else if(j == 2) begin
+                    del_input[j] <= del_input[j-1];
+                    del_dout0[j-1] <= del_dout0[j-2];
+                    del_dout1[j-2] <= buff_dout[1];
+                end else begin
+                    del_input[j] <= del_input[j-1];
+                    del_dout0[j-1] <= del_dout0[j-2];
+                    del_dout1[j-2] <= del_dout1[j-3];
+                    del_dout2 <= buff_dout[2];
+                end
+            end
+        end
+    endgenerate
+
+
+    assign dsp_in[0] = del_input[3];
+    assign dsp_in[1] = del_dout0[2];
+    assign dsp_in[2] = del_dout1[1];
+    assign dsp_in[3] = del_dout2;
+    assign dsp_in[4] = buff_dout[3];
+
+
     // DETECT HSYNC EDGE & DELAY
     reg [1:0] hsync_del;
     reg [1:0] vsync_del;
