@@ -6,15 +6,15 @@ module sp_ram
 		parameter WIDTH = 8,
 		
 		//
-		parameter ADRR_WIDTH = $clog2(DEPTH)
+		parameter ADDR_WIDTH = $clog2(DEPTH)
 	)
 	(  
-        input clk,
-        input we,
-        input en,
-        input [ADDR_WIDTH-1:0] addr,
-        input [WIDTH-1:0] din,
-        output [WIDTH-1:0] dout
+        input wire clk,
+        input wire we,
+        input wire en,
+        input wire [ADDR_WIDTH-1:0] addr,
+        input wire [WIDTH-1:0] din,
+        output wire [WIDTH-1:0] dout
     
     );
     
