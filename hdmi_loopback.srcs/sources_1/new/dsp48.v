@@ -3,29 +3,40 @@
 
 // DSP48 MODULE FOR SYSTOLIC FIR FILTER
 
-module dsp48(
+module dsp48
+#(
+	parameter delay=2
+)(
     input wire clk,
     input wire [17:0] A,                // input data in
-    input wire [19:0] B,                // previous result input
-    input wire [17:0] C,                // coeff in
+    input wire [47:0] B,                // previous result input
+    input wire [24:0] C,                // coeff in
     output wire [17:0] A_out,           // systolic, so input data needs to go further
-    output wire [19:0] D                // result out
+    output wire [47:0] D                // result out
     );
 
 
     // DATA IN DELAY
-    reg [17:0] A_del[1:0];
-
-    always @ (posedge clk)
-    begin
-        A_del[0] <= A;
-        A_del[1] <= A_del[0];
+    reg [17:0] A_del[delay-1:0];
+	genvar k;
+	generate
+	for(j=0;j<delay;j++)
+	begin
+		always @ (posedge clk)
+		begin
+			if(j==0) begin
+				A_del[j]<=A;
+			end else
+				A_del[j]<=A_del[j-1];
+		end
     end
-    assign A_out = A_del[1];
+    
+    endgenerate
+    assign A_out = A_del[delay-1];
 
 
     // COEFFICIENT REGISTER
-    reg [17:0] C_reg;
+    reg [24:0] C_reg;
 
     always @ (posedge clk)
     begin
@@ -34,7 +45,7 @@ module dsp48(
 
 
     // MULTIPLIER
-    reg [19:0] mul;
+    reg [42:0] mul;
 
     always @ (posedge clk)
     begin
@@ -43,7 +54,7 @@ module dsp48(
 
 
     // ADDER
-    reg [19:0] adder;
+    reg [47:0] adder;
 
     always @ (posedge clk)
     begin

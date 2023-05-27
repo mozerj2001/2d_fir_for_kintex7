@@ -35,7 +35,7 @@ module fir(
                 .WIDTH(8)
             ) buff (  
                 .clk(clk),
-                .we(i_valid),
+                .we(1'b1),
                 .en(1'b1),
                 .addr(addr_cntr),
                 .din(buff_din[i]),
@@ -89,6 +89,19 @@ module fir(
     assign dsp_in[3] = del_dout2;
     assign dsp_in[4] = buff_dout[3];
 
+// 5 systolic FIR filters
+wire [47:0] dsp_out[4:0];
+
+generate
+	for(i=0;i<4;i++)begin
+		systolic_fir # (.length(5))(.clk(clk), .A({10'b0,dsp_in[i]}), .C(),  .D(dsp_out[i]) )
+	end
+	
+endgenerate
+
+
+
+ 
 
     // DETECT HSYNC EDGE & DELAY
     reg [1:0] hsync_del;
@@ -118,7 +131,7 @@ module fir(
             addr_cntr <= 0;
         end else if(hsync_rising) begin
             addr_cntr <= 0;
-        end else if(i_valid) begin
+        end else begin
             addr_cntr <= addr_cntr + 1;
         end
     end
