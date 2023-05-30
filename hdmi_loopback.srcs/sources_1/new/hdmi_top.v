@@ -112,71 +112,98 @@ BUFG BUFG_200M (
 );
 
 
+    // HDMI RECEIVER
+    wire rx_clk, rx_clk_5x;
+    wire [7:0] rx_red, rx_green, rx_blue;
+    wire rx_dv, rx_hs, rx_vs;
+    wire [5:0] rx_status;
+    hdmi_rx hdmi_rx_0(
+       .clk_200M(clk_200M),
+       .rst(rst),
+       .hdmi_rx_cec(hdmi_rx_cec),
+       .hdmi_rx_hpd(hdmi_rx_hpd),
+       .hdmi_rx_scl(hdmi_rx_scl),
+       .hdmi_rx_sda(hdmi_rx_sda),
+       .hdmi_rx_clk_p(hdmi_rx_clk_p),
+       .hdmi_rx_clk_n(hdmi_rx_clk_n),
+       .hdmi_rx_d0_p(hdmi_rx_d0_p),
+       .hdmi_rx_d0_n(hdmi_rx_d0_n),
+       .hdmi_rx_d1_p(hdmi_rx_d1_p),
+       .hdmi_rx_d1_n(hdmi_rx_d1_n),
+       .hdmi_rx_d2_p(hdmi_rx_d2_p),
+       .hdmi_rx_d2_n(hdmi_rx_d2_n),
+       .rx_clk(rx_clk),
+       .rx_clk_5x(rx_clk_5x),
+       .rx_red(rx_red),
+       .rx_green(rx_green),
+       .rx_blue(rx_blue),
+       .rx_dv(rx_dv),
+       .rx_hs(rx_hs),
+       .rx_vs(rx_vs),
+       .rx_status(rx_status)
+    );
+    
+     
+    
+    // COLOR --> GREYSCALE
+    wire        y2fir_valid;
+    wire        y2fir_hsync;
+    wire        y2fir_vsync;
+    wire [7:0]  y2fir_pixel;
 
-wire rx_clk, rx_clk_5x;
-wire [7:0] rx_red, rx_green, rx_blue;
-wire rx_dv, rx_hs, rx_vs;
-wire [5:0] rx_status;
-hdmi_rx hdmi_rx_0(
-   .clk_200M(clk_200M),
-   .rst(rst),
-   .hdmi_rx_cec(hdmi_rx_cec),
-   .hdmi_rx_hpd(hdmi_rx_hpd),
-   .hdmi_rx_scl(hdmi_rx_scl),
-   .hdmi_rx_sda(hdmi_rx_sda),
-   .hdmi_rx_clk_p(hdmi_rx_clk_p),
-   .hdmi_rx_clk_n(hdmi_rx_clk_n),
-   .hdmi_rx_d0_p(hdmi_rx_d0_p),
-   .hdmi_rx_d0_n(hdmi_rx_d0_n),
-   .hdmi_rx_d1_p(hdmi_rx_d1_p),
-   .hdmi_rx_d1_n(hdmi_rx_d1_n),
-   .hdmi_rx_d2_p(hdmi_rx_d2_p),
-   .hdmi_rx_d2_n(hdmi_rx_d2_n),
-   .rx_clk(rx_clk),
-   .rx_clk_5x(rx_clk_5x),
-   .rx_red(rx_red),
-   .rx_green(rx_green),
-   .rx_blue(rx_blue),
-   .rx_dv(rx_dv),
-   .rx_hs(rx_hs),
-   .rx_vs(rx_vs),
-   .rx_status(rx_status)
-);
+    rgb2y u_rgb2y(
+        .clk        (clk),
 
-// loopback
-reg [7:0] tx_red, tx_green, tx_blue;
-reg tx_dv, tx_hs, tx_vs;
-always @ ( * )
-begin
-   tx_dv    <= rx_dv;
-   tx_hs    <= rx_hs;
-   tx_vs    <= rx_vs;
-   tx_red   <= rx_red;
-   tx_green <= rx_green;
-   tx_blue  <= rx_blue;
-end
- 
+        .kr_i       (27865),
+        .kb_i       (9463),
+        
+        .dv_i       (rx_dv),
+        .hs_i       (rx_hs),
+        .vs_i       (rx_vs),
+        .r_i        (rx_red),
+        .g_i        (rx_green),
+        .b_i        (rx_blue),
 
-hdmi_tx hdmi_tx_0(
-   .tx_clk(rx_clk),
-   .tx_clk_5x(rx_clk_5x),
-   .rst(rst),
-   .tx_red(tx_red),
-   .tx_green(tx_green),
-   .tx_blue(tx_blue),
-   .tx_dv(tx_dv),
-   .tx_hs(tx_hs),
-   .tx_vs(tx_vs),
-   .hdmi_tx_clk_p(hdmi_tx_clk_p),
-   .hdmi_tx_clk_n(hdmi_tx_clk_n),
-   .hdmi_tx_d0_p(hdmi_tx_d0_p),
-   .hdmi_tx_d0_n(hdmi_tx_d0_n),
-   .hdmi_tx_d1_p(hdmi_tx_d1_p),
-   .hdmi_tx_d1_n(hdmi_tx_d1_n),
-   .hdmi_tx_d2_p(hdmi_tx_d2_p),
-   .hdmi_tx_d2_n(hdmi_tx_d2_n)
-);
+        .dv_o       (y2fir_valid),
+        .hs_o       (y2fir_hsync),
+        .vs_o       (y2fir_vsync),
+        .y_o        (y2fir_pixel)
+    );
+    
+    
+    
+    
+    
+    // HDMI TRANSMITTER
+    assign tx_dv        = y2fir_valid;
+    assign tx_hs        = y2fir_hsync;
+    assign tx_vs        = y2fir_vsync;
+    assign tx_red       = y2fir_pixel; 
+    assign tx_green     = y2fir_pixel;
+    assign tx_blue      = y2fir_pixel;
 
-assign led_r = {pll_locked, 1'b0, rx_status};
+
+
+    hdmi_tx hdmi_tx_0(
+       .tx_clk(rx_clk),
+       .tx_clk_5x(rx_clk_5x),
+       .rst(rst),
+       .tx_red(tx_red),
+       .tx_green(tx_green),
+       .tx_blue(tx_blue),
+       .tx_dv(tx_dv),
+       .tx_hs(tx_hs),
+       .tx_vs(tx_vs),
+       .hdmi_tx_clk_p(hdmi_tx_clk_p),
+       .hdmi_tx_clk_n(hdmi_tx_clk_n),
+       .hdmi_tx_d0_p(hdmi_tx_d0_p),
+       .hdmi_tx_d0_n(hdmi_tx_d0_n),
+       .hdmi_tx_d1_p(hdmi_tx_d1_p),
+       .hdmi_tx_d1_n(hdmi_tx_d1_n),
+       .hdmi_tx_d2_p(hdmi_tx_d2_p),
+       .hdmi_tx_d2_n(hdmi_tx_d2_n)
+    );
+    
+    assign led_r = {pll_locked, 1'b0, rx_status};
 
 endmodule

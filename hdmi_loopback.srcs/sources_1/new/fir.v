@@ -10,31 +10,31 @@
 
 
 module fir(
-    input wire clk,
-    input wire rst,
-    input wire i_hsync,
-    input wire i_vsync,
-    input wire i_valid,
-    input wire [7:0] i_pixel,
-    output wire o_hsync,
-    output wire o_vsync,
-    output wire o_valid,
-    output wire [7:0] o_pixel,
+    input wire          clk,
+    input wire          rst,
+    input wire          i_hsync,
+    input wire          i_vsync,
+    input wire          i_valid,
+    input wire [7:0]    i_pixel,
+    output wire         o_hsync,
+    output wire         o_vsync,
+    output wire         o_valid,
+    output wire [7:0]   o_pixel,
     
-    input wire apb_clk,
-    input wire apb_rstn,
-    input wire apb_penable,
-    input wire apb_paddr[31:0],
-    input wire apb_psel,
-    input wire apb_pwdata[31:0],
-    input wire apb_pwrite,
+    input wire          apb_clk,
+    input wire          apb_rstn,
+    input wire          apb_penable,
+    input wire [31:0]   apb_paddr,
+    input wire          apb_psel,
+    input wire [31:0]   apb_pwdata,
+    input wire          apb_pwrite,
     
-    output wire apb_prdata[31:0],
-    output wire apb_pslverr,
-    output wire apb_pready,
+    output wire [31:0]  apb_prdata,
+    output wire         apb_pslverr,
+    output wire         apb_pready,
     
-    input wire rec_en,
-    output wire irq
+    input wire          rec_en,
+    output reg          irq
     
     
     );
@@ -51,33 +51,29 @@ module fir(
     wire rec_en_edge;
     always @ (posedge clk)
     begin
-		if (rst) begin
-			rec_en_in<=1'b0;
-			rec_en_reg_prev<=1'b0;
-			rec_en_reg<=1'b0;
-		end else begin
-			rec_en_in<=rec_en;
-			rec_en_reg<=rec_en_in;
-			rec_en_reg_prev<=rec_en_reg;
-		end
+	if (rst) begin
+	    rec_en_in<=1'b0;
+	    rec_en_reg_prev<=1'b0;
+	    rec_en_reg<=1'b0;
+	end else begin
+	    rec_en_in<=rec_en;
+	    rec_en_reg<=rec_en_in;
+	    rec_en_reg_prev<=rec_en_reg;
+	end
     end
     
    assign rec_en_edge= rec_en_reg & ~rec_en_reg_prev;
    
-   reg irq_reg; 
    always @ (posedge clk)
    begin
 	if(rst)
-		irq<=1'b0;
-	else
-	
+	    irq <= 1'b0;
    end
     
-    assign irq=irq_reg;
     
     //coeff reg
-    reg [15:0] coeff_in [31:0];
-    reg [24:0] coeff [24:0]; 
+    reg signed [15:0] coeff_in [24:0];
+    reg signed [24:0] coeff [24:0]; 
     
     //APB interface
     
@@ -87,29 +83,69 @@ module fir(
     
     wire reg_addr;
     
-    assign apb_read=apb_penable & apb_psel & ~ apb_pwrite;
-    assign apb_write=apb_penable & apb_psel &  apb_pwrite;
-    assign apb_pready=apb_penable & apb_psel;
-    assign apb_pslverr=1'b0;
-    assign write_en=apb_write & apb_paddr[31:8]==24'h412000;
-    assign reg_addr=apb_paddr [4:0];
+    assign apb_read     = apb_penable & apb_psel & ~ apb_pwrite;
+    assign apb_write    = apb_penable & apb_psel &  apb_pwrite;
+    assign apb_pready   = apb_penable & apb_psel;
+    assign apb_pslverr  = 1'b0;
+    assign write_en     = apb_write & (apb_paddr[31:8] == 24'h412000);
+    assign reg_addr     = apb_paddr[4:0];
    
-   //writing coeff registers
-    always @ (posedge apb_clk)
-    begin
-	if(apb_write)
-	    coeff_in[reg_addr]<=apb_pwdata;
-    end
-    
-    //reading
-    assign apb_prdata=coeff_in[reg_addr];
-    
+    //writing coeff registers
+    reg [15:0] w_coeff[24:0];
+
     genvar i;
     generate
-    	for(i = 0; i < 25; i++) begin
+        for(i = 0; i < 25; i = i + 1) begin
+            always @ (posedge clk)
+            begin
+                if(apb_write & apb_clk) begin
+                    coeff_in[i] <= w_coeff[i];
+                end
+            end
+        end
+    endgenerate
+
+    always @ (*)
+    begin
+        case(reg_addr)
+            0:  w_coeff[0]      <= apb_pwdata[15:0];
+            1:  w_coeff[1]      <= apb_pwdata[15:0];
+            2:  w_coeff[2]      <= apb_pwdata[15:0];
+            3:  w_coeff[3]      <= apb_pwdata[15:0];
+            4:  w_coeff[4]      <= apb_pwdata[15:0];
+            5:  w_coeff[5]      <= apb_pwdata[15:0];
+            6:  w_coeff[6]      <= apb_pwdata[15:0];
+            7:  w_coeff[7]      <= apb_pwdata[15:0];
+            8:  w_coeff[8]      <= apb_pwdata[15:0];
+            9:  w_coeff[9]      <= apb_pwdata[15:0];
+            10: w_coeff[10]     <= apb_pwdata[15:0];
+            11: w_coeff[11]     <= apb_pwdata[15:0];
+            12: w_coeff[12]     <= apb_pwdata[15:0];
+            13: w_coeff[13]     <= apb_pwdata[15:0];
+            14: w_coeff[14]     <= apb_pwdata[15:0];
+            15: w_coeff[15]     <= apb_pwdata[15:0];
+            16: w_coeff[16]     <= apb_pwdata[15:0];
+            17: w_coeff[17]     <= apb_pwdata[15:0];
+            18: w_coeff[18]     <= apb_pwdata[15:0];
+            19: w_coeff[19]     <= apb_pwdata[15:0];
+            20: w_coeff[20]     <= apb_pwdata[15:0];
+            21: w_coeff[21]     <= apb_pwdata[15:0];
+            22: w_coeff[22]     <= apb_pwdata[15:0];
+            23: w_coeff[23]     <= apb_pwdata[15:0];
+            24: w_coeff[24]     <= apb_pwdata[15:0];
+        endcase
+    end
+
+    
+    //reading
+    assign apb_prdata = coeff_in[reg_addr];
+    
+    genvar j;
+    generate
+        for(j = 0; j < 25; j = j + 1) begin
     	    always @ (posedge clk)
     	    begin
-    	    	coeff[i] <= {{9{coeff[15]}}, coeff_in[i]};        // pad 16 bit signed coeff to 25 bit signed coeff
+    	    	coeff[j] <= {{9{coeff[15]}}, coeff_in[j]};        // pad 16 bit signed coeff to 25 bit signed coeff
     	    end
     	end
     endgenerate
@@ -121,8 +157,9 @@ module fir(
     wire [7:0] buff_dout[3:0];
 
     
+    genvar k;
     generate
-        for(i = 0; i < 4; i = i + 1) begin
+        for(k = 0; k < 4; k = k + 1) begin
             sp_ram#(
                 .DEPTH(2048),
                 .WIDTH(8)
@@ -131,15 +168,15 @@ module fir(
                 .we(1'b1),
                 .en(1'b1),
                 .addr(addr_cntr),
-                .din(buff_din[i]),
-                .dout(buff_dout[i])
+                .din(buff_din[k]),
+                .dout(buff_dout[k])
             );
 
             if(i == 0) begin
 				
-                assign buff_din[i] = i_valid ?i_pixel:8'b0;
+                assign buff_din[k] = i_valid ?i_pixel:8'b0;
             end else begin
-                assign buff_din[i] = buff_dout[i-1];
+                assign buff_din[k] = buff_dout[k-1];
             end
         end
     endgenerate
@@ -153,23 +190,23 @@ module fir(
     reg [7:0] del_dout2;
 
 
-    genvar j;
+    genvar l;
     generate
-        for(j = 0; j < 4; j = j + 1) begin
+        for(l = 0; l < 4; l = l + 1) begin
             always @ (posedge clk) begin
-                if(j == 0) begin
-                    del_input[j] <= i_pixel;
-                end else if(j == 1) begin
-                    del_input[j] <= del_input[j-1];
-                    del_dout0[j-1] <= buff_dout[0];
-                end else if(j == 2) begin
-                    del_input[j] <= del_input[j-1];
-                    del_dout0[j-1] <= del_dout0[j-2];
-                    del_dout1[j-2] <= buff_dout[1];
+                if(l == 0) begin
+                    del_input[l] <= i_pixel;
+                end else if(l == 1) begin
+                    del_input[l] <= del_input[l-1];
+                    del_dout0[l-1] <= buff_dout[0];
+                end else if(l == 2) begin
+                    del_input[l] <= del_input[l-1];
+                    del_dout0[l-1] <= del_dout0[l-2];
+                    del_dout1[l-2] <= buff_dout[1];
                 end else begin
-                    del_input[j] <= del_input[j-1];
-                    del_dout0[j-1] <= del_dout0[j-2];
-                    del_dout1[j-2] <= del_dout1[j-3];
+                    del_input[l] <= del_input[l-1];
+                    del_dout0[l-1] <= del_dout0[l-2];
+                    del_dout1[l-2] <= del_dout1[l-3];
                     del_dout2 <= buff_dout[2];
                 end
             end
@@ -187,19 +224,20 @@ module fir(
     wire [47:0] dsp_out[4:0];
 
     //C input wiring is incorrect
+    genvar m;
     generate
-    	for(i = 0; i < 5; i++)begin
+    	for(m = 0; m < 5; m = m + 1)begin
     	    systolic_fir # (
                 .LENGTH(5))
             (
                 .clk(clk), 
-                .A({2'b0, dsp_in[i], 8'b0}),                    // zero padded pixel
-                .C({dsp_coeff_in_padded[i*5+4], 
-                    dsp_coeff_in_padded[i*5+3], 
-                    dsp_coeff_in_padded[i*5+2], 
-                    dsp_coeff_in_padded[i*5+1], 
-                    dsp_coeff_in_padded[i*5+0]}),                   // most significant is the last stage
-                .D(dsp_out[i]) 
+                .A({2'b0, dsp_in[m], 8'b0}),                    // zero padded pixel
+                .C({coeff[m*5+4], 
+                    coeff[m*5+3], 
+                    coeff[m*5+2], 
+                    coeff[m*5+1], 
+                    coeff[m*5+0]}),                             // most significant is the last stage
+                .D(dsp_out[m]) 
             );
     	end
     endgenerate
