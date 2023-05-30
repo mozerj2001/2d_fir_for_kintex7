@@ -77,7 +77,7 @@ module fir(
     
     //coeff reg
     reg [15:0] coeff_in [31:0];
-    reg [15:0] coeff [24:0]; 
+    reg [24:0] coeff [24:0]; 
     
     //APB interface
     
@@ -97,24 +97,22 @@ module fir(
    //writing coeff registers
     always @ (posedge apb_clk)
     begin
-		if(apb_write)
-			coeff_in[reg_addr]<=apb_pwdata;
-			
+	if(apb_write)
+	    coeff_in[reg_addr]<=apb_pwdata;
     end
     
     //reading
-	assign apb_prdata=coeff_in[reg_addr];
-	
-	genvar i;
-	generate
-		for(i=0;i<25;i++) begin
-			always @ (posedge clk)
-			begin
-				coeff[i]<=coeff_in[i];
-			end
-		
-		end
-	endgenerate
+    assign apb_prdata=coeff_in[reg_addr];
+    
+    genvar i;
+    generate
+    	for(i = 0; i < 25; i++) begin
+    	    always @ (posedge clk)
+    	    begin
+    	    	coeff[i] <= {{9{coeff[15]}}, coeff_in[i]};        // pad 16 bit signed coeff to 25 bit signed coeff
+    	    end
+    	end
+    endgenerate
 	
 
     // CIRCULAR BUFFERS
@@ -185,16 +183,26 @@ module fir(
     assign dsp_in[3] = del_dout2;
     assign dsp_in[4] = buff_dout[3];
 
-// 5 systolic FIR filters
-wire [47:0] dsp_out[4:0];
+    // 5 systolic FIR filters
+    wire [47:0] dsp_out[4:0];
 
-//C input wiring is incorrect
-generate
-	for(i=0;i<4;i++)begin
-		systolic_fir # (.length(5))(.clk(clk), .A({10'b0,dsp_in[i]}), .C({coeff[i][15],{coeff[i][15],coeff[i]}}),  .D(dsp_out[i]) )
-	end
-	
-endgenerate
+    //C input wiring is incorrect
+    generate
+    	for(i = 0; i < 5; i++)begin
+    	    systolic_fir # (
+                .LENGTH(5))
+            (
+                .clk(clk), 
+                .A({2'b0, dsp_in[i], 8'b0}),                    // zero padded pixel
+                .C({dsp_coeff_in_padded[i*5+4], 
+                    dsp_coeff_in_padded[i*5+3], 
+                    dsp_coeff_in_padded[i*5+2], 
+                    dsp_coeff_in_padded[i*5+1], 
+                    dsp_coeff_in_padded[i*5+0]}),                   // most significant is the last stage
+                .D(dsp_out[i]) 
+            );
+    	end
+    endgenerate
 
 
 
