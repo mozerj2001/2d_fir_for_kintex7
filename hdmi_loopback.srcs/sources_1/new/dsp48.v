@@ -45,11 +45,11 @@ module dsp48
 
 
     // MULTIPLIER
-    reg [42:0] mul;
+    reg [47:0] mul;
 
     always @ (posedge clk)
     begin
-        mul <= A_del[1] * C_reg;
+        mul <= A_del[delay-1] * C_reg;
     end
 
 
