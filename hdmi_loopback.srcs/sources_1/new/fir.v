@@ -155,7 +155,7 @@ module fir(
         for(j = 0; j < 25; j = j + 1) begin
     	    always @ (posedge clk)
     	    begin
-    	    	coeff[j] <= 25'b000000000000000000000011111;        // pad 16 bit signed coeff to 25 bit signed coeff
+    	    	coeff[j] <= 25'b000000000000000000000000001;        // pad 16 bit signed coeff to 25 bit signed coeff
     	    end
     	end
     endgenerate
@@ -173,7 +173,7 @@ module fir(
             sp_ram#(
                 .DEPTH(2048),
                 .WIDTH(8)
-            )  (  
+            ) u_circ_buff (  
                 .clk(clk),
                 .we(1'b1),
                 .en(1'b1),
@@ -283,24 +283,24 @@ module fir(
     assign hsync_rising = (hsync_del[1:0] == 1'b01) ? 1'b1 : 1'b0;   // resets address counters
     
     // DELAY SYNC DUE TO FIR
-    reg [10:0] hsync_firdel;
-    reg [10:0] vsync_firdel;
-    reg [10:0] valid_firdel;
+    reg [9:0] hsync_firdel;
+    reg [9:0] vsync_firdel;
+    reg [9:0] valid_firdel;
     
     always @ (posedge clk)
     begin
-        hsync_firdel <= {hsync_firdel[9:0], hsync_del};
-        vsync_firdel <= {vsync_firdel[9:0], vsync_del};
-        valid_firdel <= {valid_firdel[9:0], valid_del}; 
+        hsync_firdel <= {hsync_firdel[8:0], hsync_del[2]};
+        vsync_firdel <= {vsync_firdel[8:0], vsync_del[2]};
+        valid_firdel <= {valid_firdel[8:0], valid_del[2]}; 
     end
     
-    //assign o_hsync = hsync_firdel[10];
-    //assign o_vsync = vsync_firdel[10];
-    //assign o_valid = valid_firdel[10];
+    assign o_hsync = hsync_firdel[5];
+    assign o_vsync = vsync_firdel[5];
+    assign o_valid = valid_firdel[5];
     
-    assign o_hsync = hsync_del[1]; 
-    assign o_vsync = vsync_del[1]; 
-    assign o_valid = valid_del[1]; 
+//    assign o_hsync = hsync_del[2]; 
+//    assign o_vsync = vsync_del[2]; 
+//    assign o_valid = valid_del[2]; 
     
     
     // ADDRESS COUNTER

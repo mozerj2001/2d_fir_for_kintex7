@@ -42,5 +42,7 @@ parameter LENGTH=5
         end
     endgenerate
 
+    assign D = result_bus[4];           // output is the output of the last cascaded filter
+
 
 endmodule

@@ -11,159 +11,152 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="0.000 ns"></ZoomStartTime>
-      <ZoomEndTime time="4,150.001 ns"></ZoomEndTime>
-      <Cursor1Time time="1,431.806 ns"></Cursor1Time>
+      <ZoomStartTime time="1,332.150 ns"></ZoomStartTime>
+      <ZoomEndTime time="1,496.451 ns"></ZoomEndTime>
+      <Cursor1Time time="1,450.700 ns"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="214"></NameColumnWidth>
-      <ValueColumnWidth column_width="96"></ValueColumnWidth>
+      <ValueColumnWidth column_width="90"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="14" />
-   <wvobject fp_name="/tb_fir/clk" type="logic">
+   <WVObjectSize size="15" />
+   <wave_markers>
+      <marker time="1280000" label="" />
+      <marker time="1330000" label="" />
+      <marker time="1400000" label="" />
+      <marker time="1390000" label="" />
+   </wave_markers>
+   <wvobject fp_name="/tb_fir/dut/clk" type="logic">
       <obj_property name="ElementShortName">clk</obj_property>
       <obj_property name="ObjectShortName">clk</obj_property>
       <obj_property name="CustomSignalColor">#00FFFF</obj_property>
       <obj_property name="UseCustomSignalColor">true</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb_fir/rst" type="logic">
+   <wvobject fp_name="/tb_fir/dut/rst" type="logic">
       <obj_property name="ElementShortName">rst</obj_property>
       <obj_property name="ObjectShortName">rst</obj_property>
       <obj_property name="CustomSignalColor">#00FFFF</obj_property>
       <obj_property name="UseCustomSignalColor">true</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb_fir/valid" type="logic">
-      <obj_property name="ElementShortName">valid</obj_property>
-      <obj_property name="ObjectShortName">valid</obj_property>
+   <wvobject fp_name="/tb_fir/dut/i_hsync" type="logic">
+      <obj_property name="ElementShortName">i_hsync</obj_property>
+      <obj_property name="ObjectShortName">i_hsync</obj_property>
       <obj_property name="CustomSignalColor">#00FFFF</obj_property>
       <obj_property name="UseCustomSignalColor">true</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb_fir/pixel" type="array">
-      <obj_property name="ElementShortName">pixel[7:0]</obj_property>
-      <obj_property name="ObjectShortName">pixel[7:0]</obj_property>
+   <wvobject fp_name="/tb_fir/dut/i_vsync" type="logic">
+      <obj_property name="ElementShortName">i_vsync</obj_property>
+      <obj_property name="ObjectShortName">i_vsync</obj_property>
       <obj_property name="CustomSignalColor">#00FFFF</obj_property>
       <obj_property name="UseCustomSignalColor">true</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb_fir/dut/buff_din" type="array">
-      <obj_property name="ElementShortName">buff_din[3:0][7:0]</obj_property>
-      <obj_property name="ObjectShortName">buff_din[3:0][7:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-      <obj_property name="isExpanded"></obj_property>
-      <wvobject fp_name="/tb_fir/dut/buff_din[3]" type="array">
-         <obj_property name="ElementShortName">[3][7:0]</obj_property>
-         <obj_property name="ObjectShortName">[3][7:0]</obj_property>
-         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-      </wvobject>
-      <wvobject fp_name="/tb_fir/dut/buff_din[2]" type="array">
-         <obj_property name="ElementShortName">[2][7:0]</obj_property>
-         <obj_property name="ObjectShortName">[2][7:0]</obj_property>
-         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-      </wvobject>
-      <wvobject fp_name="/tb_fir/dut/buff_din[1]" type="array">
-         <obj_property name="ElementShortName">[1][7:0]</obj_property>
-         <obj_property name="ObjectShortName">[1][7:0]</obj_property>
-         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-      </wvobject>
-      <wvobject fp_name="/tb_fir/dut/buff_din[0]" type="array">
-         <obj_property name="ElementShortName">[0][7:0]</obj_property>
-         <obj_property name="ObjectShortName">[0][7:0]</obj_property>
-         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-      </wvobject>
-   </wvobject>
-   <wvobject fp_name="/tb_fir/dut/buff_dout" type="array">
-      <obj_property name="ElementShortName">buff_dout[3:0][7:0]</obj_property>
-      <obj_property name="ObjectShortName">buff_dout[3:0][7:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-      <obj_property name="isExpanded"></obj_property>
-      <wvobject fp_name="/tb_fir/dut/buff_dout[3]" type="array">
-         <obj_property name="ElementShortName">[3][7:0]</obj_property>
-         <obj_property name="ObjectShortName">[3][7:0]</obj_property>
-         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-      </wvobject>
-      <wvobject fp_name="/tb_fir/dut/buff_dout[2]" type="array">
-         <obj_property name="ElementShortName">[2][7:0]</obj_property>
-         <obj_property name="ObjectShortName">[2][7:0]</obj_property>
-         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-      </wvobject>
-      <wvobject fp_name="/tb_fir/dut/buff_dout[1]" type="array">
-         <obj_property name="ElementShortName">[1][7:0]</obj_property>
-         <obj_property name="ObjectShortName">[1][7:0]</obj_property>
-         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-      </wvobject>
-      <wvobject fp_name="/tb_fir/dut/buff_dout[0]" type="array">
-         <obj_property name="ElementShortName">[0][7:0]</obj_property>
-         <obj_property name="ObjectShortName">[0][7:0]</obj_property>
-         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-      </wvobject>
-   </wvobject>
-   <wvobject fp_name="/tb_fir/dut/addr_cntr" type="array">
-      <obj_property name="ElementShortName">addr_cntr[10:0]</obj_property>
-      <obj_property name="ObjectShortName">addr_cntr[10:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fir/dut/hsync_rising" type="logic">
-      <obj_property name="ElementShortName">hsync_rising</obj_property>
-      <obj_property name="ObjectShortName">hsync_rising</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fir/o_hsync" type="logic">
-      <obj_property name="ElementShortName">o_hsync</obj_property>
-      <obj_property name="ObjectShortName">o_hsync</obj_property>
-      <obj_property name="CustomSignalColor">#FFFF00</obj_property>
+   <wvobject fp_name="/tb_fir/dut/i_valid" type="logic">
+      <obj_property name="ElementShortName">i_valid</obj_property>
+      <obj_property name="ObjectShortName">i_valid</obj_property>
+      <obj_property name="CustomSignalColor">#00FFFF</obj_property>
       <obj_property name="UseCustomSignalColor">true</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb_fir/o_vsync" type="logic">
-      <obj_property name="ElementShortName">o_vsync</obj_property>
-      <obj_property name="ObjectShortName">o_vsync</obj_property>
-      <obj_property name="CustomSignalColor">#FFFF00</obj_property>
-      <obj_property name="UseCustomSignalColor">true</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fir/o_valid" type="logic">
-      <obj_property name="ElementShortName">o_valid</obj_property>
-      <obj_property name="ObjectShortName">o_valid</obj_property>
-      <obj_property name="CustomSignalColor">#FFFF00</obj_property>
-      <obj_property name="UseCustomSignalColor">true</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fir/o_pixel" type="logic">
-      <obj_property name="ElementShortName">o_pixel</obj_property>
-      <obj_property name="ObjectShortName">o_pixel</obj_property>
-      <obj_property name="CustomSignalColor">#FFFF00</obj_property>
-      <obj_property name="UseCustomSignalColor">true</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fir/img" type="array">
-      <obj_property name="ElementShortName">img[19:0][11:0][7:0]</obj_property>
-      <obj_property name="ObjectShortName">img[19:0][11:0][7:0]</obj_property>
-      <obj_property name="CustomSignalColor">#00FF7F</obj_property>
+   <wvobject fp_name="/tb_fir/dut/i_pixel" type="array">
+      <obj_property name="ElementShortName">i_pixel[7:0]</obj_property>
+      <obj_property name="ObjectShortName">i_pixel[7:0]</obj_property>
+      <obj_property name="CustomSignalColor">#00FFFF</obj_property>
       <obj_property name="UseCustomSignalColor">true</obj_property>
    </wvobject>
    <wvobject fp_name="/tb_fir/dut/dsp_in" type="array">
       <obj_property name="ElementShortName">dsp_in[4:0][7:0]</obj_property>
       <obj_property name="ObjectShortName">dsp_in[4:0][7:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
       <obj_property name="isExpanded"></obj_property>
       <wvobject fp_name="/tb_fir/dut/dsp_in[4]" type="array">
          <obj_property name="ElementShortName">[4][7:0]</obj_property>
          <obj_property name="ObjectShortName">[4][7:0]</obj_property>
-         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+         <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
       </wvobject>
       <wvobject fp_name="/tb_fir/dut/dsp_in[3]" type="array">
          <obj_property name="ElementShortName">[3][7:0]</obj_property>
          <obj_property name="ObjectShortName">[3][7:0]</obj_property>
-         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+         <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
       </wvobject>
       <wvobject fp_name="/tb_fir/dut/dsp_in[2]" type="array">
          <obj_property name="ElementShortName">[2][7:0]</obj_property>
          <obj_property name="ObjectShortName">[2][7:0]</obj_property>
-         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+         <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
       </wvobject>
       <wvobject fp_name="/tb_fir/dut/dsp_in[1]" type="array">
          <obj_property name="ElementShortName">[1][7:0]</obj_property>
          <obj_property name="ObjectShortName">[1][7:0]</obj_property>
-         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+         <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
       </wvobject>
       <wvobject fp_name="/tb_fir/dut/dsp_in[0]" type="array">
          <obj_property name="ElementShortName">[0][7:0]</obj_property>
          <obj_property name="ObjectShortName">[0][7:0]</obj_property>
-         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+         <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
       </wvobject>
+   </wvobject>
+   <wvobject fp_name="/tb_fir/dut/dsp_out" type="array">
+      <obj_property name="ElementShortName">dsp_out[4:0][47:0]</obj_property>
+      <obj_property name="ObjectShortName">dsp_out[4:0][47:0]</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+      <wvobject fp_name="/tb_fir/dut/dsp_out[4]" type="array">
+         <obj_property name="ElementShortName">[4][47:0]</obj_property>
+         <obj_property name="ObjectShortName">[4][47:0]</obj_property>
+         <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_fir/dut/dsp_out[3]" type="array">
+         <obj_property name="ElementShortName">[3][47:0]</obj_property>
+         <obj_property name="ObjectShortName">[3][47:0]</obj_property>
+         <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_fir/dut/dsp_out[2]" type="array">
+         <obj_property name="ElementShortName">[2][47:0]</obj_property>
+         <obj_property name="ObjectShortName">[2][47:0]</obj_property>
+         <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_fir/dut/dsp_out[1]" type="array">
+         <obj_property name="ElementShortName">[1][47:0]</obj_property>
+         <obj_property name="ObjectShortName">[1][47:0]</obj_property>
+         <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_fir/dut/dsp_out[0]" type="array">
+         <obj_property name="ElementShortName">[0][47:0]</obj_property>
+         <obj_property name="ObjectShortName">[0][47:0]</obj_property>
+         <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject fp_name="/tb_fir/dut/hsync_firdel" type="array">
+      <obj_property name="ElementShortName">hsync_firdel[9:0]</obj_property>
+      <obj_property name="ObjectShortName">hsync_firdel[9:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_fir/dut/vsync_firdel" type="array">
+      <obj_property name="ElementShortName">vsync_firdel[9:0]</obj_property>
+      <obj_property name="ObjectShortName">vsync_firdel[9:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_fir/dut/valid_firdel" type="array">
+      <obj_property name="ElementShortName">valid_firdel[9:0]</obj_property>
+      <obj_property name="ObjectShortName">valid_firdel[9:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_fir/dut/o_hsync" type="logic">
+      <obj_property name="ElementShortName">o_hsync</obj_property>
+      <obj_property name="ObjectShortName">o_hsync</obj_property>
+      <obj_property name="CustomSignalColor">#FFFF00</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_fir/dut/o_vsync" type="logic">
+      <obj_property name="ElementShortName">o_vsync</obj_property>
+      <obj_property name="ObjectShortName">o_vsync</obj_property>
+      <obj_property name="CustomSignalColor">#FFFF00</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_fir/dut/o_valid" type="logic">
+      <obj_property name="ElementShortName">o_valid</obj_property>
+      <obj_property name="ObjectShortName">o_valid</obj_property>
+      <obj_property name="CustomSignalColor">#FFFF00</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_fir/dut/o_pixel" type="array">
+      <obj_property name="ElementShortName">o_pixel[7:0]</obj_property>
+      <obj_property name="ObjectShortName">o_pixel[7:0]</obj_property>
+      <obj_property name="CustomSignalColor">#FFFF00</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
    </wvobject>
 </wave_config>
