@@ -251,21 +251,37 @@ module fir(
     	end
     endgenerate
 
-    // INSANITY
-    reg [47:0] fir_out;
+    // SUM FIR RESULTS IN A SHORT PIPELINE, SATURATE PAIXEL OUTPUT (+3 clk
+    // delay to sync signals)
+    reg [7:0] fir_out;
+    reg [47:0] stage0[2:0];
+    reg [47:0] stage1[1:0];
+    reg [47:0] stage2;
     
 
     always @(posedge clk)
     begin
-        fir_out = fir_out + dsp_out[0];
-        fir_out = fir_out + dsp_out[1];
-        fir_out = fir_out + dsp_out[2];
-        fir_out = fir_out + dsp_out[3];
-        fir_out = fir_out + dsp_out[4];
+        stage0[0] <= dsp_out[0] + dsp_out[1];
+        stage0[1] <= dsp_out[2] + dsp_out[3];
+        stage0[2] <= dsp_out[4];
+
+        stage1[0] <= stage0[0] + stage0[1];
+        stage1[1] <= stage0[2];
+
+        stage2 <= stage1[0] + stage1[1];
     end
 
-    //assign o_pixel = fir_out[15:8];
-    assign o_pixel = del_dout1[1];
+
+    always @ (*)
+    begin
+        if(stage2[47:8] > 255) begin
+            fir_out <= 8'hFF;
+        end else begin
+            fir_out <= stage2[15:8];
+        end
+    end
+
+    assign o_pixel = fir_out;
 
     // DETECT HSYNC EDGE & DELAY DUE TO BUFFER
     reg [2:0] hsync_del;
@@ -294,9 +310,9 @@ module fir(
         valid_firdel <= {valid_firdel[8:0], valid_del[2]}; 
     end
     
-    assign o_hsync = hsync_firdel[5];
-    assign o_vsync = vsync_firdel[5];
-    assign o_valid = valid_firdel[5];
+    assign o_hsync = hsync_firdel[8];
+    assign o_vsync = vsync_firdel[8];
+    assign o_valid = valid_firdel[8];
     
 //    assign o_hsync = hsync_del[2]; 
 //    assign o_vsync = vsync_del[2]; 
