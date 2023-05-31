@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="tb_fir_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="glbl" />
+            <top_module name="tb_fir" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="184.463 ns"></ZoomStartTime>
+      <ZoomEndTime time="217.644 ns"></ZoomEndTime>
+      <Cursor1Time time="193.523 ns"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="208"></NameColumnWidth>
+      <ValueColumnWidth column_width="90"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="24" />
+   <wvobject fp_name="/tb_fir/dut/\genblk5[0].u_systolic_fir /clk" type="logic">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+      <obj_property name="CustomSignalColor">#00FFFF</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_fir/dut/\genblk5[0].u_systolic_fir /A" type="array">
+      <obj_property name="ElementShortName">A[17:0]</obj_property>
+      <obj_property name="ObjectShortName">A[17:0]</obj_property>
+      <obj_property name="CustomSignalColor">#00FFFF</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_fir/dut/\genblk5[0].u_systolic_fir /C" type="array">
+      <obj_property name="ElementShortName">C[124:0]</obj_property>
+      <obj_property name="ObjectShortName">C[124:0]</obj_property>
+      <obj_property name="CustomSignalColor">#00FFFF</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_fir/dut/\genblk5[0].u_systolic_fir /D" type="array">
+      <obj_property name="ElementShortName">D[47:0]</obj_property>
+      <obj_property name="ObjectShortName">D[47:0]</obj_property>
+      <obj_property name="CustomSignalColor">#00FFFF</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_fir/dut/\genblk5[0].u_systolic_fir /data_in_bus" type="array">
+      <obj_property name="ElementShortName">data_in_bus[4:0][17:0]</obj_property>
+      <obj_property name="ObjectShortName">data_in_bus[4:0][17:0]</obj_property>
+      <obj_property name="CustomSignalColor">#00FFFF</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+      <wvobject fp_name="/tb_fir/dut/\genblk5[0].u_systolic_fir /data_in_bus[4]" type="array">
+         <obj_property name="ElementShortName">[4][17:0]</obj_property>
+         <obj_property name="ObjectShortName">[4][17:0]</obj_property>
+         <obj_property name="Radix">BINARYRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_fir/dut/\genblk5[0].u_systolic_fir /data_in_bus[3]" type="array">
+         <obj_property name="ElementShortName">[3][17:0]</obj_property>
+         <obj_property name="ObjectShortName">[3][17:0]</obj_property>
+         <obj_property name="Radix">BINARYRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_fir/dut/\genblk5[0].u_systolic_fir /data_in_bus[2]" type="array">
+         <obj_property name="ElementShortName">[2][17:0]</obj_property>
+         <obj_property name="ObjectShortName">[2][17:0]</obj_property>
+         <obj_property name="Radix">BINARYRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_fir/dut/\genblk5[0].u_systolic_fir /data_in_bus[1]" type="array">
+         <obj_property name="ElementShortName">[1][17:0]</obj_property>
+         <obj_property name="ObjectShortName">[1][17:0]</obj_property>
+         <obj_property name="Radix">BINARYRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_fir/dut/\genblk5[0].u_systolic_fir /data_in_bus[0]" type="array">
+         <obj_property name="ElementShortName">[0][17:0]</obj_property>
+         <obj_property name="ObjectShortName">[0][17:0]</obj_property>
+         <obj_property name="Radix">BINARYRADIX</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject fp_name="/tb_fir/dut/\genblk5[0].u_systolic_fir /result_bus" type="array">
+      <obj_property name="ElementShortName">result_bus[4:0][47:0]</obj_property>
+      <obj_property name="ObjectShortName">result_bus[4:0][47:0]</obj_property>
+      <obj_property name="CustomSignalColor">#00FFFF</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_fir/dut/\genblk5[0].u_systolic_fir /\genblk1[0].genblk1.u_dsp48d1 /A" type="array">
+      <obj_property name="ElementShortName">A[17:0]</obj_property>
+      <obj_property name="ObjectShortName">A[17:0]</obj_property>
+      <obj_property name="CustomSignalColor">#008080</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_fir/dut/\genblk5[0].u_systolic_fir /\genblk1[0].genblk1.u_dsp48d1 /B" type="array">
+      <obj_property name="ElementShortName">B[47:0]</obj_property>
+      <obj_property name="ObjectShortName">B[47:0]</obj_property>
+      <obj_property name="CustomSignalColor">#008080</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_fir/dut/\genblk5[0].u_systolic_fir /\genblk1[0].genblk1.u_dsp48d1 /C" type="array">
+      <obj_property name="ElementShortName">C[24:0]</obj_property>
+      <obj_property name="ObjectShortName">C[24:0]</obj_property>
+      <obj_property name="CustomSignalColor">#008080</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_fir/dut/\genblk5[0].u_systolic_fir /\genblk1[0].genblk1.u_dsp48d1 /A_out" type="array">
+      <obj_property name="ElementShortName">A_out[17:0]</obj_property>
+      <obj_property name="ObjectShortName">A_out[17:0]</obj_property>
+      <obj_property name="CustomSignalColor">#008080</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_fir/dut/\genblk5[0].u_systolic_fir /\genblk1[0].genblk1.u_dsp48d1 /D" type="array">
+      <obj_property name="ElementShortName">D[47:0]</obj_property>
+      <obj_property name="ObjectShortName">D[47:0]</obj_property>
+      <obj_property name="CustomSignalColor">#008080</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_fir/dut/\genblk5[0].u_systolic_fir /\genblk1[0].genblk1.u_dsp48d1 /A_del" type="array">
+      <obj_property name="ElementShortName">A_del[0:0][17:0]</obj_property>
+      <obj_property name="ObjectShortName">A_del[0:0][17:0]</obj_property>
+      <obj_property name="CustomSignalColor">#008080</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_fir/dut/\genblk5[0].u_systolic_fir /\genblk1[0].genblk1.u_dsp48d1 /C_reg" type="array">
+      <obj_property name="ElementShortName">C_reg[24:0]</obj_property>
+      <obj_property name="ObjectShortName">C_reg[24:0]</obj_property>
+      <obj_property name="CustomSignalColor">#008080</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_fir/dut/\genblk5[0].u_systolic_fir /\genblk1[0].genblk1.u_dsp48d1 /mul" type="array">
+      <obj_property name="ElementShortName">mul[47:0]</obj_property>
+      <obj_property name="ObjectShortName">mul[47:0]</obj_property>
+      <obj_property name="CustomSignalColor">#008080</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_fir/dut/\genblk5[0].u_systolic_fir /\genblk1[0].genblk1.u_dsp48d1 /adder" type="array">
+      <obj_property name="ElementShortName">adder[47:0]</obj_property>
+      <obj_property name="ObjectShortName">adder[47:0]</obj_property>
+      <obj_property name="CustomSignalColor">#008080</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_fir/dut/\genblk5[0].u_systolic_fir /\genblk1[1].genblk1.u_dsp48d2 /A" type="array">
+      <obj_property name="ElementShortName">A[17:0]</obj_property>
+      <obj_property name="ObjectShortName">A[17:0]</obj_property>
+      <obj_property name="CustomSignalColor">#00FF7F</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_fir/dut/\genblk5[0].u_systolic_fir /\genblk1[1].genblk1.u_dsp48d2 /B" type="array">
+      <obj_property name="ElementShortName">B[47:0]</obj_property>
+      <obj_property name="ObjectShortName">B[47:0]</obj_property>
+      <obj_property name="CustomSignalColor">#00FF7F</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_fir/dut/\genblk5[0].u_systolic_fir /\genblk1[1].genblk1.u_dsp48d2 /C" type="array">
+      <obj_property name="ElementShortName">C[24:0]</obj_property>
+      <obj_property name="ObjectShortName">C[24:0]</obj_property>
+      <obj_property name="CustomSignalColor">#00FF7F</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_fir/dut/\genblk5[0].u_systolic_fir /\genblk1[1].genblk1.u_dsp48d2 /A_out" type="array">
+      <obj_property name="ElementShortName">A_out[17:0]</obj_property>
+      <obj_property name="ObjectShortName">A_out[17:0]</obj_property>
+      <obj_property name="CustomSignalColor">#00FF7F</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_fir/dut/\genblk5[0].u_systolic_fir /\genblk1[1].genblk1.u_dsp48d2 /D" type="array">
+      <obj_property name="ElementShortName">D[47:0]</obj_property>
+      <obj_property name="ObjectShortName">D[47:0]</obj_property>
+      <obj_property name="CustomSignalColor">#00FF7F</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_fir/dut/\genblk5[0].u_systolic_fir /\genblk1[1].genblk1.u_dsp48d2 /A_del" type="array">
+      <obj_property name="ElementShortName">A_del[1:0][17:0]</obj_property>
+      <obj_property name="ObjectShortName">A_del[1:0][17:0]</obj_property>
+      <obj_property name="CustomSignalColor">#00FF7F</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_fir/dut/\genblk5[0].u_systolic_fir /\genblk1[1].genblk1.u_dsp48d2 /C_reg" type="array">
+      <obj_property name="ElementShortName">C_reg[24:0]</obj_property>
+      <obj_property name="ObjectShortName">C_reg[24:0]</obj_property>
+      <obj_property name="CustomSignalColor">#00FF7F</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_fir/dut/\genblk5[0].u_systolic_fir /\genblk1[1].genblk1.u_dsp48d2 /mul" type="array">
+      <obj_property name="ElementShortName">mul[47:0]</obj_property>
+      <obj_property name="ObjectShortName">mul[47:0]</obj_property>
+      <obj_property name="CustomSignalColor">#00FF7F</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_fir/dut/\genblk5[0].u_systolic_fir /\genblk1[1].genblk1.u_dsp48d2 /adder" type="array">
+      <obj_property name="ElementShortName">adder[47:0]</obj_property>
+      <obj_property name="ObjectShortName">adder[47:0]</obj_property>
+      <obj_property name="CustomSignalColor">#00FF7F</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+</wave_config>

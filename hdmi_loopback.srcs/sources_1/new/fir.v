@@ -153,10 +153,17 @@ module fir(
     genvar j;
     generate
         for(j = 0; j < 25; j = j + 1) begin
-    	    always @ (posedge clk)
-    	    begin
-    	    	coeff[j] <= 25'b000000000000000000000000001;        // pad 16 bit signed coeff to 25 bit signed coeff
-    	    end
+            if(j == 12) begin
+                always @ (posedge clk)
+                begin
+    	    	    coeff[j] <= 25'b000000000000000000000100000;        // pad 16 bit signed coeff to 25 bit signed coeff
+                end
+            end else begin
+    	        always @ (posedge clk)
+    	        begin
+    	            coeff[j] <= 25'b000000000000000000000001000;        // pad 16 bit signed coeff to 25 bit signed coeff
+    	        end
+            end
     	end
     endgenerate
 	
@@ -274,10 +281,12 @@ module fir(
 
     always @ (*)
     begin
-        if(stage2[47:8] > 255) begin
+        if((stage2[46:16] > 255) & ~stage2[47]) begin       // positive & greater than 255 --> saturate to 255
             fir_out <= 8'hFF;
+        end else if(stage2[47]) begin                       // negative --> saturate to zero
+            fir_out <= 8'h00;
         end else begin
-            fir_out <= stage2[15:8];
+            fir_out <= stage2[23:16];                       // coeff on sysfir input: s7.8, pixel on sysfir input: 8.8 --> sysfir out: s15.16
         end
     end
 
