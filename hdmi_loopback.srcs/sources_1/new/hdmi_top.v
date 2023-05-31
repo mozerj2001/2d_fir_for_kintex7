@@ -102,17 +102,17 @@ PLLE2_BASE #(
    .CLKFBIN(pll_clkfb)              // 1-bit input: Feedback clock
 );
 
-wire rst;
-assign rst = ~pll_locked;
-
-wire clk_200M;
-BUFG BUFG_200M (
-   .O(clk_200M),
-   .I(clk200M)
-);
-
-
-    // HDMI RECEIVER
+    wire rst;
+    assign rst = ~pll_locked;
+    
+    wire clk_200M;
+    BUFG BUFG_200M (
+       .O(clk_200M),
+       .I(clk200M)
+    );
+    
+    
+    
     wire rx_clk, rx_clk_5x;
     wire [7:0] rx_red, rx_green, rx_blue;
     wire rx_dv, rx_hs, rx_vs;
@@ -143,47 +143,66 @@ BUFG BUFG_200M (
        .rx_status(rx_status)
     );
     
-     
     
-    // COLOR --> GREYSCALE
-    wire        y2fir_valid;
-    wire        y2fir_hsync;
-    wire        y2fir_vsync;
-    wire [7:0]  y2fir_pixel;
+    wire [7:0] y;
+    wire y2fir_dv, y2fir_hs, y2fir_vs;
+    rgb2y rgb2y_i(
+        .clk  (rx_clk),
+    
+        .kr_i (27865),   // 0.2126
+        .kb_i (9463),    // 0.0722
+    
+        .dv_i (rx_dv),
+        .hs_i (rx_hs),
+        .vs_i (rx_vs),
+        .r_i  (rx_red),
+        .g_i  (rx_green),
+        .b_i  (rx_blue),
+    
+        .dv_o (y2fir_dv),
+        .hs_o (y2fir_hs),
+        .vs_o (y2fir_vs),
+        .y_o  (y)
+    );
 
-    rgb2y u_rgb2y(
-        .clk        (clk),
-
-        .kr_i       (27865),
-        .kb_i       (9463),
-        
-        .dv_i       (rx_dv),
-        .hs_i       (rx_hs),
-        .vs_i       (rx_vs),
-        .r_i        (rx_red),
-        .g_i        (rx_green),
-        .b_i        (rx_blue),
-
-        .dv_o       (y2fir_valid),
-        .hs_o       (y2fir_hsync),
-        .vs_o       (y2fir_vsync),
-        .y_o        (y2fir_pixel)
+    
+    
+    wire [7:0] tx_pixel;
+    wire [7:0] tx_red, tx_green, tx_blue;
+    wire tx_dv, tx_hs, tx_vs;
+    fir u_fir(
+    .clk        (clk),
+    .rst        (rst),
+    .i_hsync    (y2fir_hs),
+    .i_vsync    (y2fir_vs),
+    .i_valid    (y2fir_dv),
+    .i_pixel    (y),
+    .o_hsync    (tx_hs),
+    .o_vsync    (tx_vs),
+    .o_valid    (tx_dv),
+    .o_pixel    (tx_pixel),
+                
+    .apb_clk    (),
+    .apb_rstn   (),
+    .apb_penable(),
+    .apb_paddr  (),
+    .apb_psel   (),
+    .apb_pwdata (),
+    .apb_pwrite (),
+                
+    .apb_prdata (),
+    .apb_pslverr(),
+    .apb_pready (),
+                
+    .rec_en     (),
+    .irq        ()
     );
     
+    assign tx_red   = tx_pixel;
+    assign tx_green = tx_pixel;
+    assign tx_blue  = tx_pixel;
     
     
-    
-    
-    // HDMI TRANSMITTER
-    assign tx_dv        = y2fir_valid;
-    assign tx_hs        = y2fir_hsync;
-    assign tx_vs        = y2fir_vsync;
-    assign tx_red       = y2fir_pixel; 
-    assign tx_green     = y2fir_pixel;
-    assign tx_blue      = y2fir_pixel;
-
-
-
     hdmi_tx hdmi_tx_0(
        .tx_clk(rx_clk),
        .tx_clk_5x(rx_clk_5x),

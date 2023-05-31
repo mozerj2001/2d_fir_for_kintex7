@@ -140,12 +140,22 @@ module fir(
     //reading
     assign apb_prdata = coeff_in[reg_addr];
     
+    //genvar j;
+    //generate
+    //    for(j = 0; j < 25; j = j + 1) begin
+    //	    always @ (posedge clk)
+    //	    begin
+    //	    	coeff[j] <= {{9{coeff[15]}}, coeff_in[j]};        // pad 16 bit signed coeff to 25 bit signed coeff
+    //	    end
+    //	end
+    //endgenerate
+    
     genvar j;
     generate
         for(j = 0; j < 25; j = j + 1) begin
     	    always @ (posedge clk)
     	    begin
-    	    	coeff[j] <= {{9{coeff[15]}}, coeff_in[j]};        // pad 16 bit signed coeff to 25 bit signed coeff
+    	    	coeff[j] <= 25'b000000000000000000000011111;        // pad 16 bit signed coeff to 25 bit signed coeff
     	    end
     	end
     endgenerate
@@ -172,9 +182,8 @@ module fir(
                 .dout(buff_dout[k])
             );
 
-            if(i == 0) begin
-				
-                assign buff_din[k] = i_valid ?i_pixel:8'b0;
+            if(k == 0) begin
+                assign buff_din[k] = i_valid ? i_pixel : 8'b0;
             end else begin
                 assign buff_din[k] = buff_dout[k-1];
             end
@@ -223,13 +232,13 @@ module fir(
     // 5 systolic FIR filters
     wire [47:0] dsp_out[4:0];
 
-    //C input wiring is incorrect
+    //C input wiring is HOPEFULLY correct
     genvar m;
     generate
     	for(m = 0; m < 5; m = m + 1)begin
     	    systolic_fir # (
-                .LENGTH(5))
-            (
+                .LENGTH(5)
+            ) u_systolic_fir (
                 .clk(clk), 
                 .A({2'b0, dsp_in[m], 8'b0}),                    // zero padded pixel
                 .C({coeff[m*5+4], 
@@ -242,29 +251,58 @@ module fir(
     	end
     endgenerate
 
+    // INSANITY
+    reg [47:0] fir_out;
+    
 
+    always @(posedge clk)
+    begin
+        fir_out = fir_out + dsp_out[0];
+        fir_out = fir_out + dsp_out[1];
+        fir_out = fir_out + dsp_out[2];
+        fir_out = fir_out + dsp_out[3];
+        fir_out = fir_out + dsp_out[4];
+    end
 
- 
+    //assign o_pixel = fir_out[15:8];
+    assign o_pixel = del_dout1[1];
 
-    // DETECT HSYNC EDGE & DELAY
-    reg [1:0] hsync_del;
-    reg [1:0] vsync_del;
+    // DETECT HSYNC EDGE & DELAY DUE TO BUFFER
+    reg [2:0] hsync_del;
+    reg [2:0] vsync_del;
+    reg [2:0] valid_del;
 
     always @ (posedge clk)
     begin
-        
-            hsync_del <= {hsync_del[0], i_hsync};
-            vsync_del <= {vsync_del[0], i_vsync};
-        
+        hsync_del <= {hsync_del[1:0], i_hsync};
+        vsync_del <= {vsync_del[1:0], i_vsync};
+        valid_del <= {valid_del[1:0], i_valid}; 
     end
 
-    assign o_hsync = hsync_del[1];
-    assign o_vsync = vsync_del[1];
-
     wire hsync_rising;
-    assign hsync_rising = (hsync_del == 1'b01) ? 1'b1 : 1'b0;   // resets address counters
-
-
+    assign hsync_rising = (hsync_del[1:0] == 1'b01) ? 1'b1 : 1'b0;   // resets address counters
+    
+    // DELAY SYNC DUE TO FIR
+    reg [10:0] hsync_firdel;
+    reg [10:0] vsync_firdel;
+    reg [10:0] valid_firdel;
+    
+    always @ (posedge clk)
+    begin
+        hsync_firdel <= {hsync_firdel[9:0], hsync_del};
+        vsync_firdel <= {vsync_firdel[9:0], vsync_del};
+        valid_firdel <= {valid_firdel[9:0], valid_del}; 
+    end
+    
+    //assign o_hsync = hsync_firdel[10];
+    //assign o_vsync = vsync_firdel[10];
+    //assign o_valid = valid_firdel[10];
+    
+    assign o_hsync = hsync_del[1]; 
+    assign o_vsync = vsync_del[1]; 
+    assign o_valid = valid_del[1]; 
+    
+    
     // ADDRESS COUNTER
     reg [10:0] addr_cntr;
 
