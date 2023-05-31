@@ -156,12 +156,12 @@ module fir(
             if(j == 12) begin
                 always @ (posedge clk)
                 begin
-    	    	    coeff[j] <= 25'b000000000000000000000100000;        // pad 16 bit signed coeff to 25 bit signed coeff
+    	    	    coeff[j] <= 25'b000000000000000001100000000;        // pad 16 bit signed coeff to 25 bit signed coeff
                 end
             end else begin
     	        always @ (posedge clk)
     	        begin
-    	            coeff[j] <= 25'b000000000000000000000001000;        // pad 16 bit signed coeff to 25 bit signed coeff
+    	            coeff[j] <= 25'b1111111111111111011111111;        // pad 16 bit signed coeff to 25 bit signed coeff
     	        end
             end
     	end
@@ -265,6 +265,10 @@ module fir(
     reg [47:0] stage1[1:0];
     reg [47:0] stage2;
     
+    reg [9:0] hsync_firdel;
+    reg [9:0] vsync_firdel;
+    reg [9:0] valid_firdel;
+    
 
     always @(posedge clk)
     begin
@@ -281,12 +285,16 @@ module fir(
 
     always @ (*)
     begin
-        if((stage2[46:16] > 255) & ~stage2[47]) begin       // positive & greater than 255 --> saturate to 255
-            fir_out <= 8'hFF;
-        end else if(stage2[47]) begin                       // negative --> saturate to zero
+        if(~(valid_firdel[8])) begin
             fir_out <= 8'h00;
         end else begin
-            fir_out <= stage2[23:16];                       // coeff on sysfir input: s7.8, pixel on sysfir input: 8.8 --> sysfir out: s15.16
+            if((stage2[46:16] > 255) & ~stage2[47]) begin       // positive & greater than 255 --> saturate to 255
+                fir_out <= 8'hFF;
+            end else if(stage2[47]) begin                       // negative --> saturate to zero
+                fir_out <= 8'h00;
+            end else begin
+                fir_out <= stage2[23:16];                       // coeff on sysfir input: s7.8, pixel on sysfir input: 8.8 --> sysfir out: s15.16
+            end
         end
     end
 
@@ -308,10 +316,7 @@ module fir(
     assign hsync_rising = (hsync_del[1:0] == 1'b01) ? 1'b1 : 1'b0;   // resets address counters
     
     // DELAY SYNC DUE TO FIR
-    reg [9:0] hsync_firdel;
-    reg [9:0] vsync_firdel;
-    reg [9:0] valid_firdel;
-    
+  
     always @ (posedge clk)
     begin
         hsync_firdel <= {hsync_firdel[8:0], hsync_del[2]};
@@ -321,7 +326,7 @@ module fir(
     
     assign o_hsync = hsync_firdel[8];
     assign o_vsync = vsync_firdel[8];
-    assign o_valid = valid_firdel[8];
+    assign o_valid = valid_firdel[9];
     
 //    assign o_hsync = hsync_del[2]; 
 //    assign o_vsync = vsync_del[2]; 
