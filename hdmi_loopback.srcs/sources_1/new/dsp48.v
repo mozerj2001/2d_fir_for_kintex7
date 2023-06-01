@@ -8,16 +8,16 @@ module dsp48
 	parameter delay=2
 )(
     input wire clk,
-    input wire signed [17:0] A,                // input data in
-    input wire signed [47:0] B,                // previous result input
-    input wire signed [24:0] C,                // coeff in
-    output wire signed [17:0] A_out,           // systolic, so input data needs to go further
-    output wire signed [47:0] D                // result out
+    input wire          [17:0] A,           // input data in
+    input wire signed   [47:0] B,           // previous result input
+    input wire signed   [24:0] C,           // coeff in
+    output wire signed  [17:0] A_out,       // systolic, so input data needs to go further
+    output wire signed  [47:0] D            // result out
     );
 
 
     // DATA IN DELAY
-    reg [17:0] A_del[delay-1:0];
+    reg signed [17:0] A_del[delay-1:0];
 	genvar j;
 	generate
 	for(j=0; j<delay; j = j + 1)
@@ -36,7 +36,7 @@ module dsp48
 
 
     // COEFFICIENT REGISTER
-    reg [24:0] C_reg;
+    reg signed [24:0] C_reg;
 
     always @ (posedge clk)
     begin
@@ -45,7 +45,7 @@ module dsp48
 
 
     // MULTIPLIER
-    reg [47:0] mul;
+    reg signed [47:0] mul;
 
     always @ (posedge clk)
     begin
@@ -54,7 +54,7 @@ module dsp48
 
 
     // ADDER
-    reg [47:0] adder;
+    reg signed [47:0] adder;
 
     always @ (posedge clk)
     begin

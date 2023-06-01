@@ -156,12 +156,15 @@ module fir(
             if(j == 12) begin
                 always @ (posedge clk)
                 begin
-    	    	    coeff[j] <= 25'b000000000000000001100000000;        // pad 16 bit signed coeff to 25 bit signed coeff
+    	    	    //coeff[j] <= 25'b000000000000000001100000000;        // pad 16 bit signed coeff to 25 bit signed coeff
+    	    	    coeff[j] <= 25'b000000000000001000000000000;
+    	    	    //coeff[j] <= 25'b1111111111111111011111111;
                 end
             end else begin
     	        always @ (posedge clk)
     	        begin
     	            coeff[j] <= 25'b1111111111111111011111111;        // pad 16 bit signed coeff to 25 bit signed coeff
+    	            //coeff[j] <= 25'b000000000000000000000000000;
     	        end
             end
     	end
