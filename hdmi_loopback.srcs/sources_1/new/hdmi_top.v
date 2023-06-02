@@ -171,7 +171,7 @@ PLLE2_BASE #(
     wire [7:0] tx_red, tx_green, tx_blue;
     wire tx_dv, tx_hs, tx_vs;
     fir u_fir(
-    .clk        (clk),
+    .clk        (rx_clk),
     .rst        (rst),
     .i_hsync    (y2fir_hs),
     .i_vsync    (y2fir_vs),

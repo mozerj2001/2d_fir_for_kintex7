@@ -7,14 +7,14 @@ module systolic_fir
 #(
 parameter LENGTH=5
 )(
-    input wire clk,
-    input wire [17:0] A,                // input data in
-    input wire [(LENGTH*25)-1:0] C,     // coeffs in
-    output wire [47:0] D                // result out
+    input wire                              clk,
+    input wire          [17:0]              A,      // input data in
+    input wire signed   [(LENGTH*25)-1:0]   C,      // coeffs in
+    output wire signed  [47:0]              D       // result out
     );
     
     wire [17:0] data_in_bus [LENGTH-1:0];
-    wire [47:0] result_bus [LENGTH-1:0];
+    wire signed [47:0] result_bus [LENGTH-1:0];
     
     genvar i;
     

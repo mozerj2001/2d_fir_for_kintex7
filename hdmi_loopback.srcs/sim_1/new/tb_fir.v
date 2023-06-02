@@ -79,6 +79,8 @@ module tb_fir(
                 #CLK_PERIOD;
             end
         end
+        
+        valid <= 1'b0;
     end
 
 

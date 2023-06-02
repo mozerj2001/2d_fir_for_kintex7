@@ -26,7 +26,7 @@ module hdmi_rx(
    output wire [7:0] rx_blue,            //Blue video signal.
    output wire       rx_dv,              //Blanking signal.
    output wire       rx_hs,              //Horizontal sync signal.
-   output wire       rx_vs,           //Vertical sync signal.
+   output wire       rx_vs,             //Vertical sync signal.
    
    //Output status signal.
    output wire [5:0] rx_status
