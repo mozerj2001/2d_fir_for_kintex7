@@ -36,14 +36,16 @@ module histogram_calc #(
     wire [DATA_WIDTH-1:0]       w_curr_val;
     reg  [DATA_WIDTH-1:0]       r_incr_val;
     reg  [1:0]                  r_del_hdmi_valid;
-    reg  [ADDR_WIDTH-1:0]       r_del_hdmi_addr;
+    reg  [ADDR_WIDTH-1:0]       r_del_hdmi_addr0;
+    reg  [ADDR_WIDTH-1:0]       r_del_hdmi_addr1;
 
     always @ (posedge hdmi_clk)
     begin
         r_incr_val <= w_curr_val + 1;
         r_del_hdmi_valid[0] <= i_hdmi_valid;
         r_del_hdmi_valid[1] <= r_del_hdmi_valid[0];
-        r_del_hdmi_addr <= i_hdmi_addr;
+        r_del_hdmi_addr0 <= i_hdmi_addr;
+        r_del_hdmi_addr1 <= r_del_hdmi_addr0;
     end
 
     // Reset and copy to APB interface RAM. (State register is r_rst.)
@@ -57,7 +59,7 @@ module histogram_calc #(
 
     assign w_addr_a = r_rst ? r_addr_cntr : i_hdmi_addr;
     assign w_wr_b = (r_del_hdmi_valid[1] | r_rst);
-    assign w_addr_b = r_rst ? r_addr_cntr : r_del_hdmi_addr;
+    assign w_addr_b = r_rst ? r_addr_cntr : r_del_hdmi_addr1;
     assign w_din_b = r_rst ? 31'b0 : r_incr_val;
     
 
