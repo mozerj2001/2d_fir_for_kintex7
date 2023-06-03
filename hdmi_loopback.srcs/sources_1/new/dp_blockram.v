@@ -1,5 +1,5 @@
 `timescale 1ns / 1ps
-`default_nettype none
+
 
 // DUAL PORT BLOCK RAM (asynchronous read, synchronous write)
 module dp_blockram #(

@@ -1,5 +1,5 @@
 `timescale 1ns / 1ps
-`default_nettype none
+
 
 // DSP48 MODULE FOR SYSTOLIC FIR FILTER
 

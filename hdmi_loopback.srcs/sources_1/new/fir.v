@@ -1,5 +1,5 @@
 `timescale 1ns / 1ps
-`default_nettype none
+
 
 
 // FIR MODULE
@@ -34,6 +34,7 @@ module fir(
     output wire         apb_pready,
     
     input wire          rec_en,
+    input wire 			irq_ack,
     output reg          irq
     
     
@@ -98,15 +99,16 @@ module fir(
         for(i = 0; i < 25; i = i + 1) begin
             always @ (posedge clk)
             begin
-                if(apb_write & apb_clk) begin
+                
                     coeff_in[i] <= w_coeff[i];
-                end
+                
             end
         end
     endgenerate
 
-    always @ (*)
+    always @ ( posedge apb_clk)
     begin
+	if(apb_write) begin
         case(reg_addr)
             0:  w_coeff[0]      <= apb_pwdata[15:0];
             1:  w_coeff[1]      <= apb_pwdata[15:0];
@@ -134,23 +136,24 @@ module fir(
             23: w_coeff[23]     <= apb_pwdata[15:0];
             24: w_coeff[24]     <= apb_pwdata[15:0];
         endcase
+      end
     end
 
     
     //reading
-    assign apb_prdata = coeff_in[reg_addr];
-    
-    //genvar j;
-    //generate
-    //    for(j = 0; j < 25; j = j + 1) begin
-    //	    always @ (posedge clk)
-    //	    begin
-    //	    	coeff[j] <= {{9{coeff[15]}}, coeff_in[j]};        // pad 16 bit signed coeff to 25 bit signed coeff
-    //	    end
-    //	end
-    //endgenerate
+    assign apb_prdata = w_coeff[reg_addr];
     
     genvar j;
+    generate
+        for(j = 0; j < 25; j = j + 1) begin
+    	    always @ (posedge clk)
+    	    begin
+    	    	coeff[j] <= {{9{coeff[15]}}, coeff_in[j]};        // pad 16 bit signed coeff to 25 bit signed coeff
+    	    end
+    	end
+    endgenerate
+    
+    /*genvar j;
     generate
         for(j = 0; j < 25; j = j + 1) begin
             if(j == 12) begin
@@ -168,7 +171,7 @@ module fir(
     	        end
             end
     	end
-    endgenerate
+    endgenerate*/
 	
 
     // CIRCULAR BUFFERS
