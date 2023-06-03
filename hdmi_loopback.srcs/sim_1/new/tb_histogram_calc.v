@@ -15,7 +15,7 @@ module tb_histogram_calc(
     reg clk = 1'b0;
     reg rst = 1'b1;
     reg valid = 1'b0;
-    reg [7:0] pixel;
+    reg [7:0] pixel = 8'b0;
     reg reset_histogram = 1'b0;
 
     wire [31:0] o_hist;
@@ -52,8 +52,8 @@ module tb_histogram_calc(
         #CLK_PERIOD;
         reset_histogram <= 1'b0;
 
-        for(j = 0; j < j + 1; j = j + 1) begin
-            #HALF_CLK_PERIOD;
+        for(j = 0; j < 256; j = j + 1) begin
+            #CLK_PERIOD;
         end
         for(j = 0; j < 256; j = j + 1) begin
             pixel <= pixel + 1;
@@ -120,11 +120,16 @@ module tb_histogram_calc(
             .DATA_WIDTH(32),
             .DEPTH(256)
         ) u_dut (
-            .clk(clk),
             .rst(rst),
-            .i_addr(pixel),
-            .i_valid(valid),
-            .i_reset_histogram(reset_histogram),
+            .hdmi_clk(clk),
+            .i_hdmi_addr(pixel),
+            .i_hdmi_valid(valid),
+
+            .apb_clk(),
+            .i_apb_addr(),
+
+            .i_hist_rst(reset_histogram),
+
             .o_data(o_hist)
         );
 

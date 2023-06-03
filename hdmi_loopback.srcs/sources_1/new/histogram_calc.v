@@ -18,87 +18,113 @@ module histogram_calc #(
         DEPTH = 256,
         ADDR_WIDTH = $clog2(DEPTH)
     )(
-        input wire              clk,
         input wire              rst,
-        input wire [7:0]        i_addr,
-        input wire              i_valid,
-        input wire              i_reset_histogram,
+
+        input wire              hdmi_clk,
+        input wire [7:0]        i_hdmi_addr,
+        input wire              i_hdmi_valid,
+
+        input wire              apb_clk,
+        input wire [7:0]        i_apb_addr,
+
+        input wire              i_hist_rst,
+
         output wire [31:0]      o_data
     );
 
-    // Increment read value, write zero when input is not valid.
-    wire [31:0] w_curr_val;
-    reg [31:0] r_next_val;
+    // Registers for read-modify-write operations.
+    wire [DATA_WIDTH-1:0]       w_curr_val;
+    reg  [DATA_WIDTH-1:0]       r_incr_val;
+    reg  [1:0]                  r_del_hdmi_valid;
+    reg  [ADDR_WIDTH-1:0]       r_del_hdmi_addr;
 
-    always @ (posedge clk)
+    always @ (posedge hdmi_clk)
     begin
-        if(i_valid) begin
-            r_next_val <= w_curr_val + 1;
-        end else begin
-            r_next_val <= 32'b0;
-        end
+        r_incr_val <= w_curr_val + 1;
+        r_del_hdmi_valid[0] <= i_hdmi_valid;
+        r_del_hdmi_valid[1] <= r_del_hdmi_valid[0];
+        r_del_hdmi_addr <= i_hdmi_addr;
     end
 
-    // Reset state machine and write logic.
-    wire w_rst_addr_cntr;
-    reg [ADDR_WIDTH-1:0] r_addr_cntr;
-    reg r_rst_hist;
-    wire [ADDR_WIDTH-1:0] w_wr_addr;
+    // Reset and copy to APB interface RAM. (State register is r_rst.)
+    reg                         r_rst;
+    reg  [ADDR_WIDTH-1:0]       r_addr_cntr;
+    wire                        w_rst_addr_cntr;
+    wire [ADDR_WIDTH-1:0]       w_addr_a;
+    wire                        w_wr_b;
+    wire [ADDR_WIDTH-1:0]       w_addr_b;
+    wire [DATA_WIDTH-1:0]       w_din_b;
 
-    always @ (posedge clk)
+    assign w_addr_a = r_rst ? r_addr_cntr : i_hdmi_addr;
+    assign w_wr_b = (r_del_hdmi_valid[1] | r_rst);
+    assign w_addr_b = r_rst ? r_addr_cntr : r_del_hdmi_addr;
+    assign w_din_b = r_rst ? 31'b0 : r_incr_val;
+    
+
+    always @ (posedge hdmi_clk)
     begin
         if(rst) begin
-            r_rst_hist <= 1'b0;
-        end else if(i_reset_histogram) begin
-            r_rst_hist <= 1'b1;
+            r_rst <= 1'b0;
+        end else if(i_hist_rst) begin
+            r_rst <= 1'b1;
         end else if(w_rst_addr_cntr) begin
-            r_rst_hist <= 1'b0;
+            r_rst <= 1'b0;
         end
     end
 
-    always @ (posedge clk)
+    always @ (posedge hdmi_clk)
     begin
         if(rst) begin
             r_addr_cntr <= 0;
-        end else if(r_rst_hist) begin
+        end else if(r_rst) begin
             r_addr_cntr <= r_addr_cntr + 1;
         end
     end
 
     assign w_rst_addr_cntr = &r_addr_cntr;
-    assign w_wr_addr = r_rst_hist ? r_addr_cntr : i_addr;
 
 
-    reg r_wr_en;
-    always @ (posedge clk)
-    begin
-        if(i_valid | r_rst_hist) begin
-            r_wr_en <= 1'b1;
-        end else begin
-            r_wr_en <= 1'b0;
-        end
-    end
-
-    // DUAL PORT BLOCK RAM
+    // DUAL PORT BLOCK RAM --> calc histogram
     dp_blockram #(
         .DEPTH(DEPTH),
+        .ADDR_WIDTH(ADDR_WIDTH),
         .DATA_WIDTH(DATA_WIDTH)
-    ) u_dpbram (
-        .clk_a(clk),
+    ) u_dpbram_hist (
+        // Read port --> RMW operand, RMW result during reset
+        .clk_a(hdmi_clk),
         .we_a(),
         .en_a(1'b1),
-        .addr_a(i_addr),
+        .addr_a(w_addr_a),
         .din_a(),
         .dout_a(w_curr_val),
-        .clk_b(clk),
-        .we_b(r_wr_en),
+        // Write port --> RMW result
+        .clk_b(hdmi_clk),
+        .we_b(w_wr_b),
         .en_b(1'b1),
-        .addr_b(w_wr_addr),
-        .din_b(r_next_val),
+        .addr_b(w_addr_b),
+        .din_b(w_din_b),
         .dout_b()
     );
 
-    assign o_data = w_curr_val;
+    // DUAL PORT BLOCK RAM --> make histogram accessible to APB clock domain
+    dp_blockram #(
+        .DEPTH(DEPTH),
+        .ADDR_WIDTH(ADDR_WIDTH),
+        .DATA_WIDTH(DATA_WIDTH)
+    ) u_dpbram_apb (
+        .clk_a(),
+        .we_a(),
+        .en_a(),
+        .addr_a(),
+        .din_a(),
+        .dout_a(),
+        .clk_b(),
+        .we_b(),
+        .en_b(),
+        .addr_b(),
+        .din_b(),
+        .dout_b()
+    );
 
 
 endmodule

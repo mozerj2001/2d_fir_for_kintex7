@@ -18,28 +18,32 @@ module dp_blockram #(
     reg [DATA_WIDTH-1:0] mem[DEPTH-1:0];
 
     //PORT A
+    reg [31:0] dout_a_reg;
     always @ (posedge clk_a)
     begin
         if(en_a) begin
             if(we_a) begin
                 mem[addr_a] <= din_a;
             end
+            dout_a_reg <= mem[addr_a];
         end
     end
 
-    assign dout_a = mem[addr_a];
+    assign dout_a = dout_a_reg;
 
 
     //PORT B
+    reg [31:0] dout_b_reg;
     always @ (posedge clk_b)
     begin
         if(en_b) begin
             if(we_b) begin
                 mem[addr_b] <= din_b;
             end
+            dout_b_reg <= mem[addr_b];
         end
     end
 
-    assign dout_b = mem[addr_b];
+    assign dout_b = dout_b_reg;
 
 endmodule
