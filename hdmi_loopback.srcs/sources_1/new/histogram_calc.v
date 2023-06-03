@@ -8,28 +8,36 @@
 // Input reset signal only resets the reset counter, the RAM values must be
 // reset by the i_reset_histogram input (after detection, the address counter
 // will go through all values of the address with write enabled and 0 on the
-// input). During reset, i_valid must be driven low.
+// input).
 //
-// The histogram can simply be read by directly addressing the RAM module via
-// the i_addr input.
+// During the histogram reset phase, before their value is set to null, values
+// from the last histogram are copied into a second block RAM, that can be
+// read from the APB bus. This way the last histogram can always be read,
+// unless the module is in a state of r_rst = 1.
+//
+// The histogram can simply be read by directly addressing the second RAM 
+// module via the i_apb_addr input. i_apb_read must be driven high while
+// reading, to avoid a histogram reset modifying the read values.
 
 module histogram_calc #(
         DATA_WIDTH = 32,
         DEPTH = 256,
         ADDR_WIDTH = $clog2(DEPTH)
     )(
-        input wire              rst,
+        input wire                      rst,
 
-        input wire              hdmi_clk,
-        input wire [7:0]        i_hdmi_addr,
-        input wire              i_hdmi_valid,
+        input wire                      hdmi_clk,
+        input wire [ADDR_WIDTH-1:0]     i_hdmi_addr,
+        input wire                      i_hdmi_valid,
 
-        input wire              apb_clk,
-        input wire [7:0]        i_apb_addr,
+        input wire                      apb_clk,
+        input wire [ADDR_WIDTH-1:0]     i_apb_addr,
+        input wire                      i_apb_read,
 
-        input wire              i_hist_rst,
+        input wire                      i_hist_rst,
 
-        output wire [31:0]      o_data
+        output wire                     o_ready,        // data can currently be read
+        output wire [DATA_WIDTH-1:0]    o_data
     );
 
     // Registers for read-modify-write operations.
@@ -50,7 +58,9 @@ module histogram_calc #(
 
     // Reset and copy to APB interface RAM. (State register is r_rst.)
     reg                         r_rst;
+    reg                         r_rst_del;
     reg  [ADDR_WIDTH-1:0]       r_addr_cntr;
+    reg  [ADDR_WIDTH-1:0]       r_addr_cntr_del;
     wire                        w_rst_addr_cntr;
     wire [ADDR_WIDTH-1:0]       w_addr_a;
     wire                        w_wr_b;
@@ -72,7 +82,11 @@ module histogram_calc #(
         end else if(w_rst_addr_cntr) begin
             r_rst <= 1'b0;
         end
+
+        r_rst_del <= r_rst;
     end
+
+    assign o_ready = ~r_rst;
 
     always @ (posedge hdmi_clk)
     begin
@@ -81,6 +95,8 @@ module histogram_calc #(
         end else if(r_rst) begin
             r_addr_cntr <= r_addr_cntr + 1;
         end
+
+        r_addr_cntr_del <= r_addr_cntr;
     end
 
     assign w_rst_addr_cntr = &r_addr_cntr;
@@ -94,7 +110,7 @@ module histogram_calc #(
     ) u_dpbram_hist (
         // Read port --> RMW operand, RMW result during reset
         .clk_a(hdmi_clk),
-        .we_a(),
+        .we_a(1'b0),
         .en_a(1'b1),
         .addr_a(w_addr_a),
         .din_a(),
@@ -114,18 +130,21 @@ module histogram_calc #(
         .ADDR_WIDTH(ADDR_WIDTH),
         .DATA_WIDTH(DATA_WIDTH)
     ) u_dpbram_apb (
-        .clk_a(),
-        .we_a(),
-        .en_a(),
-        .addr_a(),
-        .din_a(),
+        // Write port --> copy histogram during histogram reset (disable while
+        // reading)
+        .clk_a(hdmi_clk),
+        .we_a(r_rst),
+        .en_a(~i_apb_read),
+        .addr_a(r_addr_cntr_del),
+        .din_a(w_curr_val),
         .dout_a(),
-        .clk_b(),
-        .we_b(),
-        .en_b(),
-        .addr_b(),
+        // Read port --> read by the CPU through the APB bus
+        .clk_b(apb_clk),
+        .we_b(1'b0),
+        .en_b(1'b1),
+        .addr_b(i_apb_addr),
         .din_b(),
-        .dout_b()
+        .dout_b(o_data)
     );
 
 

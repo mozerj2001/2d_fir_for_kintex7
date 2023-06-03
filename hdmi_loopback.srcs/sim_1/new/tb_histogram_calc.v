@@ -12,10 +12,16 @@ module tb_histogram_calc(
     localparam CLK_PERIOD = 10;
     localparam HALF_CLK_PERIOD = CLK_PERIOD/2;
 
+    localparam APB_CLK_PERIOD = 18;
+    localparam HALF_APB_CLK_PERIOD = APB_CLK_PERIOD/2;
+
     reg clk = 1'b0;
+    reg apb_clk = 1'b0;
     reg rst = 1'b1;
     reg valid = 1'b0;
     reg [7:0] pixel = 8'b0;
+    reg [7:0] apb_addr = 8'b0;
+    reg apb_read = 1'b0;
     reg reset_histogram = 1'b0;
 
     wire [31:0] o_hist;
@@ -26,7 +32,7 @@ module tb_histogram_calc(
     initial begin
         for(i = 0; i < 20; i = i + 1) begin
             for(j = 0; j < 12; j = j + 1) begin
-                img[i][j] <= i;
+                img[i][j] <= i+j;
             end
         end
     end
@@ -38,6 +44,11 @@ module tb_histogram_calc(
         #HALF_CLK_PERIOD;
     end
 
+    always 
+    begin
+        apb_clk <= ~apb_clk;
+        #HALF_APB_CLK_PERIOD;
+    end
 
     initial begin
         #CLK_PERIOD;
@@ -93,6 +104,7 @@ module tb_histogram_calc(
         #CLK_PERIOD;
 
         // Reset histogram and check all memory cells.
+        // Check BRAM reserved for APB read.
         reset_histogram <= 1'b1;
         #CLK_PERIOD;
         reset_histogram <= 1'b0;
@@ -104,13 +116,18 @@ module tb_histogram_calc(
         #CLK_PERIOD;
 
         for(j = 0; j < 256; j = j + 1) begin
-            pixel <= pixel + 1;
             #CLK_PERIOD;
         end
         for(j = 0; j < 256; j = j + 1) begin
             pixel <= pixel + 1;
             #CLK_PERIOD;
         end
+        apb_read <= 1'b1;
+        for(j = 0; j < 256; j = j + 1) begin
+            apb_addr <= apb_addr + 1;
+            #APB_CLK_PERIOD;
+        end
+        apb_read <= 1'b0;
 
         #1000;
     end
@@ -125,8 +142,9 @@ module tb_histogram_calc(
             .i_hdmi_addr(pixel),
             .i_hdmi_valid(valid),
 
-            .apb_clk(),
-            .i_apb_addr(),
+            .apb_clk(apb_clk),
+            .i_apb_addr(apb_addr),
+            .i_apb_read(apb_read),
 
             .i_hist_rst(reset_histogram),
 
