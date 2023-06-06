@@ -148,7 +148,7 @@ module fir(
         for(j = 0; j < 25; j = j + 1) begin
     	    always @ (posedge clk)
     	    begin
-    	    	coeff[j] <= {{9{coeff[15]}}, coeff_in[j]};        // pad 16 bit signed coeff to 25 bit signed coeff
+    	    	coeff[j] <= {{9{coeff_in[j][15]}}, coeff_in[j]};        // pad 16 bit signed coeff to 25 bit signed coeff
     	    end
     	end
     endgenerate

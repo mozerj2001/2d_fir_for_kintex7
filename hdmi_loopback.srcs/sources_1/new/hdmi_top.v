@@ -51,7 +51,11 @@ module hdmi_top(
    input  wire       hdmi_tx_cec,
    input  wire       hdmi_tx_hpdn,
    input  wire       hdmi_tx_scl,
-   input  wire       hdmi_tx_sda
+   input  wire       hdmi_tx_sda,
+   
+   input wire UART_rxd,
+   output wire UART_txd
+   
 );
 
 //******************************************************************************
@@ -113,6 +117,18 @@ PLLE2_BASE #(
     
     
     
+    
+        
+    wire [31:0] APB_M_paddr;
+  wire APB_M_penable;
+  wire [31:0]APB_M_prdata;
+  wire APB_M_pready;
+  wire APB_M_psel;
+  wire APB_M_pslverr;
+  wire [31:0]APB_M_pwdata;
+  wire APB_M_pwrite;
+ 
+    
     wire rx_clk, rx_clk_5x;
     wire [7:0] rx_red, rx_green, rx_blue;
     wire rx_dv, rx_hs, rx_vs;
@@ -170,6 +186,14 @@ PLLE2_BASE #(
     wire [7:0] tx_pixel;
     wire [7:0] tx_red, tx_green, tx_blue;
     wire tx_dv, tx_hs, tx_vs;
+    
+    
+    wire irq_hist;
+    wire rec_en;
+    wire irq_ack;
+  
+    
+    
     fir u_fir(
     .clk        (rx_clk),
     .rst        (rst),
@@ -182,20 +206,21 @@ PLLE2_BASE #(
     .o_valid    (tx_dv),
     .o_pixel    (tx_pixel),
                 
-    .apb_clk    (),
-    .apb_rstn   (),
-    .apb_penable(),
-    .apb_paddr  (),
-    .apb_psel   (),
-    .apb_pwdata (),
-    .apb_pwrite (),
+    .apb_clk    (clk100M),
+    .apb_rstn   (1'b1),
+    .apb_penable(APB_M_penable),
+    .apb_paddr  (APB_M_paddr),
+    .apb_psel   (APB_M_psel),
+    .apb_pwdata (APB_M_pwdata),
+    .apb_pwrite (APB_M_pwrite),
                 
-    .apb_prdata (),
-    .apb_pslverr(),
-    .apb_pready (),
+    .apb_prdata (APB_M_prdata),
+    .apb_pslverr(APB_M_pslverr),
+    .apb_pready (APB_M_pready),
                 
-    .rec_en     (),
-    .irq        ()
+    .rec_en     (rec_en),
+    .irq(irq_hist),
+    .irq_ack(irq_ack)
     );
     
     assign tx_red   = tx_pixel;
@@ -224,5 +249,27 @@ PLLE2_BASE #(
     );
     
     assign led_r = {pll_locked, 1'b0, rx_status};
+    
+    
+
+ 
+    
+   cpu_sys_wrapper cpu_sys(
+   .APB_M_paddr(APB_M_paddr),
+   .APB_M_penable(APB_M_penable),
+   .APB_M_prdata(APB_M_prdata),
+   .APB_M_pready(APB_M_pready),
+   .APB_M_psel(APB_M_psel),
+   .APB_M_pslverr(APB_M_pslverr),
+   .APB_M_pwdata(APB_M_pwdata),
+   .APB_M_pwrite(APB_M_pwrite),
+   .UART_rxd(UART_rxd),
+   .UART_txd(UART_txd),
+   .mb_clk(clk100M),
+   .mb_rst(rstbt),
+   .irq_hist(irq_hist),
+   .gpio_hist_ack({irq_ack,rec_en})
+    
+    );
 
 endmodule

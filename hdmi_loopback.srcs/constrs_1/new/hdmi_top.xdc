@@ -75,3 +75,9 @@ set_property PACKAGE_PIN G21 [get_ports hdmi_tx_hpdn]
 set_property PACKAGE_PIN D24 [get_ports hdmi_tx_scl]
 set_property PACKAGE_PIN C24 [get_ports hdmi_tx_sda]
 
+set_property IOSTANDARD LVCMOS33 [get_ports UART_rxd]
+set_property IOSTANDARD LVCMOS33 [get_ports UART_txd]
+
+set_property PACKAGE_PIN N21 [get_ports UART_rxd]
+set_property PACKAGE_PIN M21 [get_ports UART_txd]
+
